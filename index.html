@@ -1,0 +1,1233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#fdf2f8">
+<meta property="og:title" content="When You Know, You Know">
+<meta property="og:description" content="Something I made for you.">
+<meta property="og:type" content="website">
+<title>When You Know, You Know</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Nunito+Sans:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+/* ============================================
+   CSS CUSTOM PROPERTIES
+   ============================================ */
+:root {
+  --color-bg-start: #fdf2f8;
+  --color-bg-end: #fce7f3;
+  --color-bg-deep: #f9d4e8;
+  --color-rose: #b76e79;
+  --color-rose-light: #d4a0aa;
+  --color-rose-dark: #8b4a55;
+  --color-rose-gold: #c5937e;
+  --color-rose-gold-light: #e8c4b0;
+  --color-cream: #fefbf7;
+  --color-cream-warm: #fdf5ed;
+  --color-text: #5a2d3a;
+  --color-text-light: #8b5e6b;
+  --color-text-faint: #b8899a;
+  --color-white: #ffffff;
+  --color-overlay: rgba(90, 45, 58, 0.55);
+  --color-card-border: rgba(197, 147, 126, 0.35);
+  --color-card-shadow: rgba(183, 110, 121, 0.12);
+  --font-display: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+  --font-body: 'Nunito Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --transition-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* ============================================
+   RESET & BASE
+   ============================================ */
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html {
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+}
+
+body {
+  font-family: var(--font-body);
+  color: var(--color-text);
+  background: linear-gradient(160deg, var(--color-bg-start) 0%, var(--color-bg-end) 50%, var(--color-bg-deep) 100%);
+  min-height: 100vh;
+  min-height: -webkit-fill-available;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ============================================
+   LANDING / INTRO SCREEN
+   This screen unlocks audio on iOS/Chrome
+   ============================================ */
+#landing {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(160deg, var(--color-bg-start) 0%, var(--color-bg-end) 50%, var(--color-bg-deep) 100%);
+  cursor: pointer;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+#landing .landing-content {
+  text-align: center;
+  padding: 2rem;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: landingFadeIn 1.2s var(--transition-smooth) 0.3s forwards;
+}
+
+#landing .landing-heart {
+  font-size: 2.5rem;
+  margin-bottom: 1.5rem;
+  opacity: 0;
+  animation: landingHeartBeat 1.5s var(--transition-smooth) 0.6s forwards;
+}
+
+#landing h1 {
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 6vw, 3rem);
+  font-weight: 300;
+  font-style: italic;
+  color: var(--color-rose);
+  letter-spacing: 0.02em;
+  line-height: 1.3;
+  margin-bottom: 2rem;
+}
+
+#landing .landing-tap {
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 300;
+  color: var(--color-text-faint);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  opacity: 0;
+  animation: landingPulse 2s ease-in-out 1.5s infinite;
+}
+
+@keyframes landingFadeIn {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes landingHeartBeat {
+  0% { opacity: 0; transform: scale(0.5); }
+  50% { opacity: 1; transform: scale(1.15); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes landingPulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.9; }
+}
+
+#landing.hiding {
+  opacity: 0;
+  transition: opacity 0.6s var(--transition-smooth);
+  pointer-events: none;
+}
+
+/* ============================================
+   MAIN CONTAINER
+   ============================================ */
+#app {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem 1rem 4rem;
+  min-height: 100vh;
+  opacity: 0;
+  transition: opacity 0.8s var(--transition-smooth) 0.3s;
+}
+
+#app.visible {
+  opacity: 1;
+}
+
+/* ============================================
+   HEADER / TITLE
+   ============================================ */
+.header {
+  text-align: center;
+  margin-bottom: 2.5rem;
+  padding-top: 1rem;
+}
+
+.header h1 {
+  font-family: var(--font-display);
+  font-size: clamp(1.6rem, 5.5vw, 2.6rem);
+  font-weight: 300;
+  font-style: italic;
+  color: var(--color-rose);
+  letter-spacing: 0.03em;
+  line-height: 1.35;
+  opacity: 0;
+  transform: translateY(15px);
+}
+
+.header h1.animate-in {
+  animation: headerIn 1s var(--transition-smooth) forwards;
+}
+
+.header-line {
+  display: block;
+  width: 50px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--color-rose-gold-light), transparent);
+  margin: 0.8rem auto 0;
+  opacity: 0;
+}
+
+.header-line.animate-in {
+  animation: lineIn 1.2s var(--transition-smooth) 0.4s forwards;
+}
+
+@keyframes headerIn {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes lineIn {
+  to { opacity: 1; }
+}
+
+/* ============================================
+   PERIODIC TABLE GRID
+   ============================================ */
+.table-container {
+  width: 100%;
+  max-width: 480px;
+}
+
+.table-row {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+/* ============================================
+   ELEMENT CELLS
+   ============================================ */
+.element {
+  position: relative;
+  width: 90px;
+  height: 100px;
+  background: linear-gradient(145deg, var(--color-cream), var(--color-cream-warm));
+  border: 1px solid var(--color-card-border);
+  border-radius: var(--radius-md);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  -webkit-user-select: none;
+  user-select: none;
+  box-shadow:
+    0 2px 8px var(--color-card-shadow),
+    0 1px 3px rgba(183, 110, 121, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.7);
+  transition:
+    transform 0.35s var(--transition-bounce),
+    box-shadow 0.35s var(--transition-smooth),
+    border-color 0.35s var(--transition-smooth);
+  opacity: 0;
+  transform: translateY(20px) scale(0.9);
+}
+
+.element.animate-in {
+  animation: elementIn 0.5s var(--transition-bounce) forwards;
+}
+
+@keyframes elementIn {
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.element::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-md);
+  background: linear-gradient(145deg, rgba(197, 147, 126, 0.08), rgba(183, 110, 121, 0.04));
+  opacity: 0;
+  transition: opacity 0.35s var(--transition-smooth);
+}
+
+.element:hover::before,
+.element:active::before {
+  opacity: 1;
+}
+
+.element:hover,
+.element:active {
+  transform: translateY(-2px) scale(1.04);
+  box-shadow:
+    0 8px 25px var(--color-card-shadow),
+    0 3px 10px rgba(183, 110, 121, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.7);
+  border-color: var(--color-rose-light);
+}
+
+.element:active {
+  transform: translateY(0) scale(0.98);
+  transition-duration: 0.1s;
+}
+
+.element-symbol {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 500;
+  color: var(--color-rose-dark);
+  line-height: 1;
+  position: relative;
+  z-index: 1;
+}
+
+.element-name {
+  font-family: var(--font-body);
+  font-size: 0.6rem;
+  font-weight: 400;
+  color: var(--color-text-light);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-top: 6px;
+  position: relative;
+  z-index: 1;
+}
+
+/* Small heart decoration on the last element */
+.element[data-index="12"] .element-symbol::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  right: -10px;
+  width: 6px;
+  height: 6px;
+  background: var(--color-rose);
+  border-radius: 50%;
+  opacity: 0.4;
+}
+
+/* ============================================
+   MODAL / OVERLAY
+   ============================================ */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 500;
+  background: var(--color-overlay);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 0.4s var(--transition-smooth),
+    visibility 0s 0.4s;
+}
+
+.modal-overlay.active {
+  opacity: 1;
+  visibility: visible;
+  transition:
+    opacity 0.4s var(--transition-smooth),
+    visibility 0s 0s;
+}
+
+.modal {
+  position: relative;
+  width: 100%;
+  max-width: 420px;
+  max-height: 90vh;
+  max-height: 90dvh;
+  background: linear-gradient(170deg, var(--color-cream) 0%, var(--color-cream-warm) 100%);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-card-border);
+  box-shadow:
+    0 25px 60px rgba(90, 45, 58, 0.25),
+    0 8px 20px rgba(90, 45, 58, 0.12);
+  overflow: hidden;
+  transform: scale(0.85) translateY(20px);
+  opacity: 0;
+  transition:
+    transform 0.45s var(--transition-bounce),
+    opacity 0.35s var(--transition-smooth);
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-overlay.active .modal {
+  transform: scale(1) translateY(0);
+  opacity: 1;
+}
+
+/* Close button */
+.modal-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 10;
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.85);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  color: var(--color-text);
+  font-size: 1.1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s, transform 0.2s;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.modal-close:hover {
+  background: rgba(255, 255, 255, 1);
+  transform: scale(1.1);
+}
+
+.modal-close:active {
+  transform: scale(0.95);
+}
+
+/* Photo area — padding fallback for browsers without aspect-ratio */
+.modal-photo-wrap {
+  position: relative;
+  width: 100%;
+  padding-bottom: 75%; /* 4:3 fallback */
+  background: var(--color-bg-deep);
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+@supports (aspect-ratio: 4 / 3) {
+  .modal-photo-wrap {
+    padding-bottom: 0;
+    aspect-ratio: 4 / 3;
+  }
+}
+
+.modal-photo {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.modal-photo-placeholder {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(145deg, var(--color-bg-end), var(--color-bg-deep));
+  color: var(--color-text-faint);
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  gap: 0.5rem;
+}
+
+.modal-photo-placeholder .placeholder-icon {
+  font-size: 2rem;
+  opacity: 0.5;
+}
+
+/* Modal content */
+.modal-body {
+  padding: 1.5rem;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  flex: 1;
+  min-height: 0;
+}
+
+.modal-element-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.modal-symbol {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  font-weight: 500;
+  color: var(--color-rose-dark);
+  line-height: 1;
+}
+
+.modal-name {
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--color-text-light);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.modal-title {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 400;
+  font-style: italic;
+  color: var(--color-rose);
+  line-height: 1.4;
+  margin-bottom: 1rem;
+}
+
+.modal-story {
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 300;
+  color: var(--color-text);
+  line-height: 1.75;
+}
+
+/* Audio controls */
+.modal-audio {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(197, 147, 126, 0.15);
+}
+
+.audio-btn {
+  width: 42px;
+  height: 42px;
+  border: 1.5px solid var(--color-card-border);
+  border-radius: 50%;
+  background: var(--color-cream);
+  color: var(--color-rose);
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.25s var(--transition-smooth);
+}
+
+.audio-btn:hover {
+  background: var(--color-rose);
+  color: var(--color-white);
+  border-color: var(--color-rose);
+}
+
+.audio-btn:active {
+  transform: scale(0.92);
+}
+
+.audio-label {
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  font-weight: 300;
+  color: var(--color-text-faint);
+  letter-spacing: 0.05em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ============================================
+   FOOTER
+   ============================================ */
+.footer {
+  text-align: center;
+  margin-top: 2.5rem;
+  opacity: 0;
+}
+
+.footer.animate-in {
+  animation: footerIn 1s var(--transition-smooth) forwards;
+}
+
+@keyframes footerIn {
+  to { opacity: 1; }
+}
+
+.footer-heart {
+  display: inline-block;
+  color: var(--color-rose-light);
+  font-size: 0.9rem;
+  animation: heartPulse 2.5s ease-in-out infinite;
+}
+
+@keyframes heartPulse {
+  0%, 100% { transform: scale(1); opacity: 0.6; }
+  50% { transform: scale(1.15); opacity: 1; }
+}
+
+/* ============================================
+   RESPONSIVE - DESKTOP
+   ============================================ */
+@media (min-width: 600px) {
+  .element {
+    width: 110px;
+    height: 120px;
+  }
+
+  .element-symbol {
+    font-size: 2.4rem;
+  }
+
+  .element-name {
+    font-size: 0.65rem;
+  }
+
+  .table-row {
+    gap: 14px;
+    margin-bottom: 14px;
+  }
+
+  .modal {
+    max-width: 500px;
+  }
+
+  #app {
+    padding: 3rem 1.5rem 5rem;
+  }
+}
+
+/* ============================================
+   RESPONSIVE - SMALL PHONES
+   ============================================ */
+@media (max-width: 374px) {
+  .element {
+    width: 74px;
+    height: 84px;
+  }
+
+  .element-symbol {
+    font-size: 1.6rem;
+  }
+
+  .element-name {
+    font-size: 0.5rem;
+  }
+
+  .table-row {
+    gap: 6px;
+    margin-bottom: 6px;
+  }
+
+  .modal-body {
+    padding: 1.2rem;
+  }
+}
+
+/* ============================================
+   SAFE AREA (notched iPhones)
+   ============================================ */
+@supports (padding: env(safe-area-inset-top)) {
+  body {
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+}
+
+/* ============================================
+   REDUCE MOTION (accessibility)
+   ============================================ */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+</style>
+</head>
+<body>
+
+<!-- ==========================================
+     LANDING SCREEN — unlocks audio context
+     ========================================== -->
+<div id="landing">
+  <div class="landing-content">
+    <div class="landing-heart" aria-hidden="true">&#9825;</div>
+    <h1>When You Know,<br>You Know</h1>
+    <div class="landing-tap">tap anywhere to begin</div>
+  </div>
+</div>
+
+<!-- ==========================================
+     MAIN APP
+     ========================================== -->
+<div id="app">
+  <header class="header">
+    <h1 id="mainTitle">When You Know, You Know</h1>
+    <span class="header-line" id="headerLine"></span>
+  </header>
+
+  <div class="table-container" id="tableContainer">
+    <!-- Elements are rendered by JS -->
+  </div>
+
+  <div class="footer" id="footer">
+    <span class="footer-heart" aria-hidden="true">&#9825;</span>
+  </div>
+</div>
+
+<!-- ==========================================
+     MODAL
+     ========================================== -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal" id="modal" role="dialog" aria-modal="true">
+    <button class="modal-close" id="modalClose" aria-label="Close">&times;</button>
+    <div class="modal-photo-wrap" id="modalPhotoWrap">
+      <!-- photo or placeholder injected by JS -->
+    </div>
+    <div class="modal-body">
+      <div class="modal-element-badge">
+        <span class="modal-symbol" id="modalSymbol"></span>
+        <span class="modal-name" id="modalName"></span>
+      </div>
+      <h2 class="modal-title" id="modalTitle"></h2>
+      <p class="modal-story" id="modalStory"></p>
+      <div class="modal-audio" id="modalAudio">
+        <button class="audio-btn" id="audioBtn" aria-label="Play or pause song">
+          &#9654;
+        </button>
+        <span class="audio-label" id="audioLabel">Tap to play</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ==============================================
+   CONFIG — EDIT EVERYTHING HERE
+   ==============================================
+   Each element object has:
+     symbol   — the periodic table symbol (displayed large)
+     name     — element name (displayed small, below symbol)
+     title    — the memory title (shown in opened modal)
+     story    — your story text (shown in opened modal)
+     img      — path to photo file (e.g. "img/1-walmart.jpg")
+     audio    — path to audio file (e.g. "audio/1-walmart.mp3")
+     songName — display name for the song
+*/
+const ELEMENTS = [
+  {
+    symbol: "W",
+    name: "Walmart",
+    title: "Where It All Started",
+    story: "Write your story here. This is the placeholder for the Walmart memory — where you met, the beginning of everything. Replace this text with your own words.",
+    img: "img/1-walmart.jpg",
+    audio: "audio/1-walmart.mp3",
+    songName: "Your song here"
+  },
+  {
+    symbol: "H",
+    name: "Home",
+    title: "Frozen (Three Times)",
+    story: "Write your story here. This is the placeholder for the Home memory — she fell asleep watching Frozen three times. Replace this text with your own words.",
+    img: "img/2-home.jpg",
+    audio: "audio/2-home.mp3",
+    songName: "Your song here"
+  },
+  {
+    symbol: "En",
+    name: "Evenings",
+    title: "Bedtime Stories",
+    story: "Write your story here. This is the placeholder for the Evenings memory — bedtime stories on FaceTime every night. Replace this text with your own words.",
+    img: "img/3-evenings.jpg",
+    audio: "audio/3-evenings.mp3",
+    songName: "Your song here"
+  },
+  {
+    symbol: "Y",
+    name: "Yellow",
+    title: "The Sunflower Field",
+    story: "Write your story here. This is the placeholder for the Yellow memory — the sunflower field, where you asked her to be yours. Replace this text with your own words.",
+    img: "img/4-yellow.jpg",
+    audio: "audio/4-yellow.mp3",
+    songName: "Your song here"
+  },
+  {
+    symbol: "O",
+    name: "Escape Room",
+    title: "We Figured It Out Together",
+    story: "Write your story here. This is the placeholder for the Escape Room memory — you figured it out together. Replace this text with your own words.",
+    img: "img/5-escape-room.jpg",
+    audio: "audio/5-escape-room.mp3",
+    songName: "Your song here"
+  },
+  {
+    symbol: "U",
+    name: "Under the Sun",
+    title: "Keystone State Park",
+    story: "Write your story here. This is the placeholder for the Under the Sun memory — Keystone State Park, swimming, first picnic, the bracelet. Replace this text with your own words.",
+    img: "img/6-under-the-sun.jpg",
+    audio: "audio/6-under-the-sun.mp3",
+    songName: "Your song here"
+  },
+  {
+    symbol: "Kn",
+    name: "Keener",
+    title: "June 3rd",
+    story: "Write your story here. This is the placeholder for the Keener memory — June 3rd, Legion Keener Park, your first kiss, she said \"duh\". Replace this text with your own words.",
+    img: "img/7-keener.jpg",
+    audio: "audio/7-keener.mp3",
+    songName: "Your song here"
+  },
+  {
+    symbol: "Ow",
+    name: "Our World",
+    title: "The Meadows",
+    story: "Write your story here. This is the placeholder for the Our World memory — The Meadows, first hangout, the slurp, the ice cream. Replace this text with your own words.",
+    img: "img/8-our-world.jpg",
+    audio: "audio/8-our-world.mp3",
+    songName: "Your song here"
+  },
+  {
+    symbol: "Yo",
+    name: "Tokyo",
+    title: "Mr Tokyo",
+    story: "Write your story here. This is the placeholder for the Tokyo memory — Mr Tokyo, her favorite restaurant, the soy sauce. Replace this text with your own words.",
+    img: "img/9-tokyo.jpg",
+    audio: "audio/9-tokyo.mp3",
+    songName: "Your song here"
+  },
+  {
+    symbol: "U",
+    name: "Us",
+    title: "Twin Lakes",
+    story: "Write your story here. This is the placeholder for the Us memory — Twin Lakes, the photos, her lockscreen photo. Replace this text with your own words.",
+    img: "img/10-us.jpg",
+    audio: "audio/10-us.mp3",
+    songName: "Your song here"
+  },
+  {
+    symbol: "K",
+    name: "Spark",
+    title: "The Lanterns",
+    story: "Write your story here. This is the placeholder for the Spark memory — Pittsburgh lantern festival, releasing lanterns on the water. Replace this text with your own words.",
+    img: "img/11-spark.jpg",
+    audio: "audio/11-spark.mp3",
+    songName: "Your song here"
+  },
+  {
+    symbol: "No",
+    name: "No Matter What",
+    title: "The Movie Theater",
+    story: "Write your story here. This is the placeholder for the No Matter What memory — movie theater, it was never about the movie. Replace this text with your own words.",
+    img: "img/12-no-matter-what.jpg",
+    audio: "audio/12-no-matter-what.mp3",
+    songName: "Your song here"
+  },
+  {
+    symbol: "W",
+    name: "Walmart",
+    title: "Where It Ends, Where It Begins Again",
+    story: "Write your story here. This is the placeholder for the final Walmart memory — where it started, where it ends, praying there's room for more. Replace this text with your own words.",
+    img: "img/13-walmart.jpg",
+    audio: "audio/13-walmart.mp3",
+    songName: "Your song here"
+  }
+];
+
+/*
+  GRID LAYOUT — which element indices go in each row
+  Row 1: W  H  En    (indices 0, 1, 2)
+  Row 2: Y  O  U     (indices 3, 4, 5)
+  Row 3:   Kn Ow     (indices 6, 7)
+  Row 4:   Yo U      (indices 8, 9)
+  Row 5: K  No W     (indices 10, 11, 12)
+*/
+const GRID_ROWS = [
+  [0, 1, 2],
+  [3, 4, 5],
+  [6, 7],
+  [8, 9],
+  [10, 11, 12]
+];
+
+/* ==============================================
+   APPLICATION STATE
+   ============================================== */
+let audioContext = null;
+let currentAudio = null;
+let currentElementIndex = -1;
+let isPlaying = false;
+let audioUnlocked = false;
+let savedScrollY = 0;
+
+/* ==============================================
+   DOM REFERENCES
+   ============================================== */
+const landing = document.getElementById('landing');
+const app = document.getElementById('app');
+const tableContainer = document.getElementById('tableContainer');
+const mainTitle = document.getElementById('mainTitle');
+const headerLine = document.getElementById('headerLine');
+const footer = document.getElementById('footer');
+const modalOverlay = document.getElementById('modalOverlay');
+const modal = document.getElementById('modal');
+const modalClose = document.getElementById('modalClose');
+const modalPhotoWrap = document.getElementById('modalPhotoWrap');
+const modalSymbol = document.getElementById('modalSymbol');
+const modalName = document.getElementById('modalName');
+const modalTitle = document.getElementById('modalTitle');
+const modalStory = document.getElementById('modalStory');
+const modalAudio = document.getElementById('modalAudio');
+const audioBtn = document.getElementById('audioBtn');
+const audioLabel = document.getElementById('audioLabel');
+
+/* ==============================================
+   LANDING SCREEN — TAP TO BEGIN
+   Unlocks audio on iOS Safari and Chrome
+   ============================================== */
+landing.addEventListener('click', function handleLanding() {
+  // Create and unlock audio context with a user gesture
+  try {
+    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    // Play a silent buffer to fully unlock audio on iOS
+    var buffer = audioContext.createBuffer(1, 1, 22050);
+    var source = audioContext.createBufferSource();
+    source.buffer = buffer;
+    source.connect(audioContext.destination);
+    source.start(0);
+    audioUnlocked = true;
+  } catch (e) {
+    // AudioContext not available, audio will use fallback
+    audioUnlocked = true;
+  }
+
+  // Hide landing
+  landing.classList.add('hiding');
+  setTimeout(function() {
+    landing.style.display = 'none';
+  }, 600);
+
+  // Show app
+  app.classList.add('visible');
+
+  // Stagger element animations
+  startEntryAnimations();
+
+  // Remove listener
+  landing.removeEventListener('click', handleLanding);
+}, { passive: true });
+
+/* ==============================================
+   BUILD THE GRID
+   ============================================== */
+function buildGrid() {
+  GRID_ROWS.forEach(function(row) {
+    var rowDiv = document.createElement('div');
+    rowDiv.className = 'table-row';
+
+    row.forEach(function(idx) {
+      var el = ELEMENTS[idx];
+      var cell = document.createElement('div');
+      cell.className = 'element';
+      cell.setAttribute('data-index', idx);
+      cell.setAttribute('role', 'button');
+      cell.setAttribute('tabindex', '0');
+      cell.setAttribute('aria-label', el.name + '. Tap to open memory.');
+
+      var sym = document.createElement('span');
+      sym.className = 'element-symbol';
+      sym.textContent = el.symbol;
+
+      var name = document.createElement('span');
+      name.className = 'element-name';
+      name.textContent = el.name;
+
+      cell.appendChild(sym);
+      cell.appendChild(name);
+
+      // Click handler
+      cell.addEventListener('click', function() {
+        openElement(idx);
+      }, { passive: true });
+
+      // Keyboard accessibility
+      cell.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          openElement(idx);
+        }
+      });
+
+      rowDiv.appendChild(cell);
+    });
+
+    tableContainer.appendChild(rowDiv);
+  });
+}
+
+/* ==============================================
+   ENTRY ANIMATIONS — staggered fade in
+   ============================================== */
+function startEntryAnimations() {
+  // Title
+  setTimeout(function() {
+    mainTitle.classList.add('animate-in');
+  }, 200);
+
+  // Line
+  setTimeout(function() {
+    headerLine.classList.add('animate-in');
+  }, 500);
+
+  // Elements — stagger by 80ms each
+  var allElements = tableContainer.querySelectorAll('.element');
+  allElements.forEach(function(el, i) {
+    setTimeout(function() {
+      el.classList.add('animate-in');
+    }, 600 + i * 80);
+  });
+
+  // Footer
+  setTimeout(function() {
+    footer.classList.add('animate-in');
+  }, 600 + allElements.length * 80 + 200);
+}
+
+/* ==============================================
+   OPEN AN ELEMENT
+   ============================================== */
+function openElement(idx) {
+  // If same element is already open, close it
+  if (currentElementIndex === idx && modalOverlay.classList.contains('active')) {
+    closeModal();
+    return;
+  }
+
+  // Stop any currently playing audio
+  stopAudio();
+
+  var el = ELEMENTS[idx];
+  currentElementIndex = idx;
+
+  // Set modal content
+  modalSymbol.textContent = el.symbol;
+  modalName.textContent = el.name;
+  modalTitle.textContent = el.title;
+  modalStory.textContent = el.story;
+
+  // Photo
+  modalPhotoWrap.innerHTML = '';
+  var img = new Image();
+  img.className = 'modal-photo';
+  img.alt = el.name + ' — ' + el.title;
+  img.src = el.img;
+  img.onerror = function() {
+    modalPhotoWrap.innerHTML =
+      '<div class="modal-photo-placeholder">' +
+        '<span class="placeholder-icon">&#9825;</span>' +
+        '<span>Add photo: ' + el.img + '</span>' +
+      '</div>';
+  };
+  img.onload = function() {
+    // Photo loaded successfully
+  };
+  modalPhotoWrap.appendChild(img);
+
+  // Audio setup
+  audioLabel.textContent = el.songName || 'Tap to play';
+  audioBtn.innerHTML = '&#9654;';
+  isPlaying = false;
+
+  // Load the audio
+  currentAudio = new Audio();
+  currentAudio.preload = 'auto';
+  currentAudio.src = el.audio;
+  currentAudio.loop = true;
+
+  // Handle audio errors gracefully
+  currentAudio.onerror = function() {
+    audioLabel.textContent = 'Audio: ' + el.audio;
+  };
+
+  // Show modal
+  modalOverlay.classList.add('active');
+
+  // Prevent body scroll when modal is open (iOS-safe)
+  savedScrollY = window.scrollY;
+  document.body.style.position = 'fixed';
+  document.body.style.top = '-' + savedScrollY + 'px';
+  document.body.style.left = '0';
+  document.body.style.right = '0';
+  document.body.style.overflow = 'hidden';
+
+  // Try to auto-play the audio (will work because landing screen unlocked context)
+  playAudio();
+}
+
+/* ==============================================
+   AUDIO CONTROLS
+   ============================================== */
+function playAudio() {
+  if (!currentAudio) return;
+
+  var playPromise = currentAudio.play();
+  if (playPromise !== undefined) {
+    playPromise.then(function() {
+      isPlaying = true;
+      audioBtn.innerHTML = '&#9646;&#9646;';
+      var el = ELEMENTS[currentElementIndex];
+      audioLabel.textContent = el.songName || 'Now playing';
+    }).catch(function() {
+      // Autoplay blocked — user must tap play button
+      isPlaying = false;
+      audioBtn.innerHTML = '&#9654;';
+      audioLabel.textContent = 'Tap to play';
+    });
+  }
+}
+
+function stopAudio() {
+  if (currentAudio) {
+    currentAudio.pause();
+    currentAudio.currentTime = 0;
+    currentAudio.src = '';
+    currentAudio = null;
+  }
+  isPlaying = false;
+}
+
+function toggleAudio() {
+  if (!currentAudio) return;
+
+  if (isPlaying) {
+    currentAudio.pause();
+    isPlaying = false;
+    audioBtn.innerHTML = '&#9654;';
+    audioLabel.textContent = 'Paused';
+  } else {
+    var playPromise = currentAudio.play();
+    if (playPromise !== undefined) {
+      playPromise.then(function() {
+        isPlaying = true;
+        audioBtn.innerHTML = '&#9646;&#9646;';
+        var el = ELEMENTS[currentElementIndex];
+        audioLabel.textContent = el.songName || 'Now playing';
+      }).catch(function() {
+        audioLabel.textContent = 'Unable to play';
+      });
+    }
+  }
+}
+
+audioBtn.addEventListener('click', function(e) {
+  e.stopPropagation();
+  toggleAudio();
+}, { passive: false });
+
+/* ==============================================
+   CLOSE MODAL
+   ============================================== */
+function closeModal() {
+  stopAudio();
+  modalOverlay.classList.remove('active');
+
+  // Restore body scroll (iOS-safe)
+  document.body.style.position = '';
+  document.body.style.top = '';
+  document.body.style.left = '';
+  document.body.style.right = '';
+  document.body.style.overflow = '';
+  window.scrollTo(0, savedScrollY);
+
+  currentElementIndex = -1;
+}
+
+// Close button
+modalClose.addEventListener('click', function(e) {
+  e.stopPropagation();
+  closeModal();
+}, { passive: false });
+
+// Click overlay to close
+modalOverlay.addEventListener('click', function(e) {
+  if (e.target === modalOverlay) {
+    closeModal();
+  }
+}, { passive: true });
+
+// Prevent modal content clicks from closing
+modal.addEventListener('click', function(e) {
+  e.stopPropagation();
+}, { passive: true });
+
+// Escape key to close
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape' && modalOverlay.classList.contains('active')) {
+    closeModal();
+  }
+});
+
+/* ==============================================
+   HANDLE VISIBILITY CHANGE
+   When she locks her phone and comes back,
+   audio state should be consistent
+   ============================================== */
+document.addEventListener('visibilitychange', function() {
+  if (document.hidden) {
+    // Page is hidden (phone locked, tab switched)
+    if (currentAudio && isPlaying) {
+      currentAudio.pause();
+    }
+  } else {
+    // Page is visible again
+    if (currentAudio && isPlaying) {
+      currentAudio.play().catch(function() {
+        // Audio resume blocked, update UI
+        isPlaying = false;
+        audioBtn.innerHTML = '&#9654;';
+        audioLabel.textContent = 'Tap to play';
+      });
+    }
+  }
+});
+
+/* ==============================================
+   INIT
+   ============================================== */
+buildGrid();
+
+</script>
+</body>
+</html>
