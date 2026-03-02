@@ -570,23 +570,34 @@ body {
 .footer-link {
   display: inline-block;
   font-family: var(--font-display);
-  font-size: 0.95rem;
+  font-size: 1.1rem;
   font-weight: 400;
   font-style: italic;
-  color: var(--color-rose);
+  color: var(--color-rose-dark);
   text-decoration: none;
-  letter-spacing: 0.03em;
-  margin-bottom: 1rem;
-  padding: 0.4rem 1.2rem;
-  border: 1px solid var(--color-card-border);
-  border-radius: 20px;
-  background: rgba(255, 255, 255, 0.5);
+  letter-spacing: 0.04em;
+  margin-bottom: 1.5rem;
+  padding: 0.7rem 2rem;
+  border: 1.5px solid var(--color-rose-light);
+  border-radius: 28px;
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.7), rgba(253, 245, 237, 0.7));
+  box-shadow:
+    0 2px 10px rgba(183, 110, 121, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6);
   transition: all 0.3s var(--transition-smooth);
 }
 
 .footer-link:hover {
-  background: rgba(255, 255, 255, 0.8);
-  border-color: var(--color-rose-light);
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.9), rgba(253, 245, 237, 0.9));
+  border-color: var(--color-rose);
+  transform: translateY(-1px);
+  box-shadow:
+    0 4px 15px rgba(183, 110, 121, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+
+.footer-link:active {
+  transform: translateY(0);
 }
 
 .footer-heart {
@@ -785,9 +796,9 @@ const ELEMENTS = [
   },
   {
     symbol: "O",
-    name: "Escape Room",
-    title: "We Figured It Out Together",
-    story: "Write your story here. This is the placeholder for the Escape Room memory — you figured it out together. Replace this text with your own words.",
+    name: "Our Escape (That Wasn't)",
+    title: "Locked In Together",
+    story: "Write your story here. This is the placeholder for the Escape Room memory — you didn't escape, and that was the funniest part. Replace this text with your own words.",
     img: "img/5-escape-room.jpg",
     audio: "audio/5-escape-room.mp3",
     songName: "Your song here"
