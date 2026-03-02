@@ -507,7 +507,7 @@ body {
 .modal-audio {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  justify-content: center;
   margin-top: 1.25rem;
   padding-top: 1rem;
   border-top: 1px solid rgba(197, 147, 126, 0.15);
@@ -540,14 +540,7 @@ body {
 }
 
 .audio-label {
-  font-family: var(--font-body);
-  font-size: 0.75rem;
-  font-weight: 300;
-  color: var(--color-text-faint);
-  letter-spacing: 0.05em;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  display: none;
 }
 
 /* ============================================
@@ -765,7 +758,7 @@ const ELEMENTS = [
     story: "Write your story here. This is the placeholder for the Walmart memory — where you met, the beginning of everything. Replace this text with your own words.",
     img: "img/1-walmart.jpg",
     audio: "audio/1-walmart.mp3",
-    songName: "Your song here"
+    songName: ""
   },
   {
     symbol: "H",
@@ -774,7 +767,7 @@ const ELEMENTS = [
     story: "Write your story here. This is the placeholder for the Home memory — she fell asleep watching Frozen three times. Replace this text with your own words.",
     img: "img/2-home.jpg",
     audio: "audio/2-home.mp3",
-    songName: "Your song here"
+    songName: ""
   },
   {
     symbol: "En",
@@ -783,7 +776,7 @@ const ELEMENTS = [
     story: "Write your story here. This is the placeholder for the Evenings memory — bedtime stories on FaceTime every night. Replace this text with your own words.",
     img: "img/3-evenings.jpg",
     audio: "audio/3-evenings.mp3",
-    songName: "Your song here"
+    songName: ""
   },
   {
     symbol: "Y",
@@ -792,7 +785,7 @@ const ELEMENTS = [
     story: "Write your story here. This is the placeholder for the Yellow memory — the sunflower field, where you asked her to be yours. Replace this text with your own words.",
     img: "img/4-yellow.jpg",
     audio: "audio/4-yellow.mp3",
-    songName: "Your song here"
+    songName: ""
   },
   {
     symbol: "O",
@@ -801,7 +794,7 @@ const ELEMENTS = [
     story: "Write your story here. This is the placeholder for the Escape Room memory — you didn't escape, and that was the funniest part. Replace this text with your own words.",
     img: "img/5-escape-room.jpg",
     audio: "audio/5-escape-room.mp3",
-    songName: "Your song here"
+    songName: ""
   },
   {
     symbol: "U",
@@ -810,7 +803,7 @@ const ELEMENTS = [
     story: "Write your story here. This is the placeholder for the Under the Sun memory — Keystone State Park, swimming, first picnic, the bracelet. Replace this text with your own words.",
     img: "img/6-under-the-sun.jpg",
     audio: "audio/6-under-the-sun.mp3",
-    songName: "Your song here"
+    songName: ""
   },
   {
     symbol: "Kn",
@@ -819,7 +812,7 @@ const ELEMENTS = [
     story: "Write your story here. This is the placeholder for the Keener memory — June 3rd, Legion Keener Park, your first kiss, she said \"duh\". Replace this text with your own words.",
     img: "img/7-keener.jpg",
     audio: "audio/7-keener.mp3",
-    songName: "Your song here"
+    songName: ""
   },
   {
     symbol: "Ow",
@@ -828,7 +821,7 @@ const ELEMENTS = [
     story: "Write your story here. This is the placeholder for the Our World memory — The Meadows, first hangout, the slurp, the ice cream. Replace this text with your own words.",
     img: "img/8-our-world.jpg",
     audio: "audio/8-our-world.mp3",
-    songName: "Your song here"
+    songName: ""
   },
   {
     symbol: "Yo",
@@ -837,7 +830,7 @@ const ELEMENTS = [
     story: "Write your story here. This is the placeholder for the Tokyo memory — Mr Tokyo, her favorite restaurant, the soy sauce. Replace this text with your own words.",
     img: "img/9-tokyo.jpg",
     audio: "audio/9-tokyo.mp3",
-    songName: "Your song here"
+    songName: ""
   },
   {
     symbol: "U",
@@ -846,7 +839,7 @@ const ELEMENTS = [
     story: "Write your story here. This is the placeholder for the Us memory — Twin Lakes, the photos, her lockscreen photo. Replace this text with your own words.",
     img: "img/10-us.jpg",
     audio: "audio/10-us.mp3",
-    songName: "Your song here"
+    songName: ""
   },
   {
     symbol: "K",
@@ -855,7 +848,7 @@ const ELEMENTS = [
     story: "Write your story here. This is the placeholder for the Spark memory — Pittsburgh lantern festival, releasing lanterns on the water. Replace this text with your own words.",
     img: "img/11-spark.jpg",
     audio: "audio/11-spark.mp3",
-    songName: "Your song here"
+    songName: ""
   },
   {
     symbol: "No",
@@ -864,7 +857,7 @@ const ELEMENTS = [
     story: "Write your story here. This is the placeholder for the No Matter What memory — movie theater, it was never about the movie. Replace this text with your own words.",
     img: "img/12-no-matter-what.jpg",
     audio: "audio/12-no-matter-what.mp3",
-    songName: "Your song here"
+    songName: ""
   },
   {
     symbol: "W",
@@ -873,7 +866,7 @@ const ELEMENTS = [
     story: "Write your story here. This is the placeholder for the final Walmart memory — where it started, where it ends, praying there's room for more. Replace this text with your own words.",
     img: "img/13-walmart.jpg",
     audio: "audio/13-walmart.mp3",
-    songName: "Your song here"
+    songName: ""
   }
 ];
 
