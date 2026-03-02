@@ -211,7 +211,7 @@ body {
 }
 
 /* ============================================
-   PERIODIC TABLE GRID
+   HEART GRID
    ============================================ */
 .table-container {
   width: 100%;
@@ -221,8 +221,15 @@ body {
 .table-row {
   display: flex;
   justify-content: center;
-  gap: 10px;
-  margin-bottom: 10px;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+/* Spacer creates the dip between heart humps */
+.heart-spacer {
+  width: 64px;
+  height: 72px;
+  flex-shrink: 0;
 }
 
 /* ============================================
@@ -230,8 +237,8 @@ body {
    ============================================ */
 .element {
   position: relative;
-  width: 90px;
-  height: 100px;
+  width: 64px;
+  height: 72px;
   background: linear-gradient(145deg, var(--color-cream), var(--color-cream-warm));
   border: 1px solid var(--color-card-border);
   border-radius: var(--radius-md);
@@ -297,37 +304,12 @@ body {
 
 .element-symbol {
   font-family: var(--font-display);
-  font-size: 2rem;
+  font-size: 1.8rem;
   font-weight: 500;
   color: var(--color-rose-dark);
   line-height: 1;
   position: relative;
   z-index: 1;
-}
-
-.element-name {
-  font-family: var(--font-body);
-  font-size: 0.6rem;
-  font-weight: 400;
-  color: var(--color-text-light);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  margin-top: 6px;
-  position: relative;
-  z-index: 1;
-}
-
-/* Small heart decoration on the last element */
-.element[data-index="12"] .element-symbol::after {
-  content: '';
-  position: absolute;
-  bottom: -2px;
-  right: -10px;
-  width: 6px;
-  height: 6px;
-  background: var(--color-rose);
-  border-radius: 50%;
-  opacity: 0.4;
 }
 
 /* ============================================
@@ -582,8 +564,30 @@ body {
   to { opacity: 1; }
 }
 
-.footer-heart {
+.footer-link {
   display: inline-block;
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  font-weight: 400;
+  font-style: italic;
+  color: var(--color-rose);
+  text-decoration: none;
+  letter-spacing: 0.03em;
+  margin-bottom: 1rem;
+  padding: 0.4rem 1.2rem;
+  border: 1px solid var(--color-card-border);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.5);
+  transition: all 0.3s var(--transition-smooth);
+}
+
+.footer-link:hover {
+  background: rgba(255, 255, 255, 0.8);
+  border-color: var(--color-rose-light);
+}
+
+.footer-heart {
+  display: block;
   color: var(--color-rose-light);
   font-size: 0.9rem;
   animation: heartPulse 2.5s ease-in-out infinite;
@@ -599,21 +603,22 @@ body {
    ============================================ */
 @media (min-width: 600px) {
   .element {
-    width: 110px;
-    height: 120px;
+    width: 90px;
+    height: 100px;
+  }
+
+  .heart-spacer {
+    width: 90px;
+    height: 100px;
   }
 
   .element-symbol {
     font-size: 2.4rem;
   }
 
-  .element-name {
-    font-size: 0.65rem;
-  }
-
   .table-row {
-    gap: 14px;
-    margin-bottom: 14px;
+    gap: 12px;
+    margin-bottom: 12px;
   }
 
   .modal {
@@ -630,21 +635,22 @@ body {
    ============================================ */
 @media (max-width: 374px) {
   .element {
-    width: 74px;
-    height: 84px;
+    width: 54px;
+    height: 62px;
+  }
+
+  .heart-spacer {
+    width: 54px;
+    height: 62px;
   }
 
   .element-symbol {
-    font-size: 1.6rem;
-  }
-
-  .element-name {
-    font-size: 0.5rem;
+    font-size: 1.4rem;
   }
 
   .table-row {
-    gap: 6px;
-    margin-bottom: 6px;
+    gap: 5px;
+    margin-bottom: 5px;
   }
 
   .modal-body {
@@ -703,7 +709,8 @@ body {
   </div>
 
   <div class="footer" id="footer">
-    <span class="footer-heart" aria-hidden="true">&#9825;</span>
+    <a href="glossary.html" class="footer-link">Our Elements</a>
+    <a href="yours.html" class="footer-heart" aria-hidden="true" style="text-decoration:none;">&#9825;</a>
   </div>
 </div>
 
@@ -867,19 +874,19 @@ const ELEMENTS = [
 ];
 
 /*
-  GRID LAYOUT — which element indices go in each row
-  Row 1: W  H  En    (indices 0, 1, 2)
-  Row 2: Y  O  U     (indices 3, 4, 5)
-  Row 3:   Kn Ow     (indices 6, 7)
-  Row 4:   Yo U      (indices 8, 9)
-  Row 5: K  No W     (indices 10, 11, 12)
+  HEART LAYOUT — reading order spells WHEN YOU KNOW YOU KNOW
+  Row 1: W  H  [gap]  En  Y    (heart humps)
+  Row 2: O  U  Kn  Ow  Yo      (wide body)
+  Row 3:    U   K   No          (taper)
+  Row 4:       W                (point)
+
+  Use 'gap' to insert a spacer for the heart dip
 */
 const GRID_ROWS = [
-  [0, 1, 2],
-  [3, 4, 5],
-  [6, 7],
-  [8, 9],
-  [10, 11, 12]
+  [0, 1, 'gap', 2, 3],
+  [4, 5, 6, 7, 8],
+  [9, 10, 11],
+  [12]
 ];
 
 /* ==============================================
@@ -958,6 +965,15 @@ function buildGrid() {
     rowDiv.className = 'table-row';
 
     row.forEach(function(idx) {
+      // Insert invisible spacer for heart dip
+      if (idx === 'gap') {
+        var spacer = document.createElement('div');
+        spacer.className = 'heart-spacer';
+        spacer.setAttribute('aria-hidden', 'true');
+        rowDiv.appendChild(spacer);
+        return;
+      }
+
       var el = ELEMENTS[idx];
       var cell = document.createElement('div');
       cell.className = 'element';
@@ -970,12 +986,7 @@ function buildGrid() {
       sym.className = 'element-symbol';
       sym.textContent = el.symbol;
 
-      var name = document.createElement('span');
-      name.className = 'element-name';
-      name.textContent = el.name;
-
       cell.appendChild(sym);
-      cell.appendChild(name);
 
       // Click handler
       cell.addEventListener('click', function() {

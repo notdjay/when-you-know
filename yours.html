@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#fdf2f8">
+<meta name="robots" content="noindex, nofollow">
+<title>For You</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Nunito+Sans:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --color-bg-start: #fdf2f8;
+  --color-bg-end: #fce7f3;
+  --color-bg-deep: #f9d4e8;
+  --color-rose: #b76e79;
+  --color-rose-light: #d4a0aa;
+  --color-rose-dark: #8b4a55;
+  --color-rose-gold-light: #e8c4b0;
+  --color-cream: #fefbf7;
+  --color-cream-warm: #fdf5ed;
+  --color-text: #5a2d3a;
+  --color-text-light: #8b5e6b;
+  --color-text-faint: #b8899a;
+  --color-card-border: rgba(197, 147, 126, 0.35);
+  --color-card-shadow: rgba(183, 110, 121, 0.12);
+  --font-display: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+  --font-body: 'Nunito Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --transition-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html { font-size: 16px; -webkit-text-size-adjust: 100%; }
+
+body {
+  font-family: var(--font-body);
+  color: var(--color-text);
+  background: linear-gradient(160deg, var(--color-bg-start) 0%, var(--color-bg-end) 50%, var(--color-bg-deep) 100%);
+  background-attachment: fixed;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Landing — needs tap to unlock audio on iOS */
+#landing {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(160deg, var(--color-bg-start) 0%, var(--color-bg-end) 50%, var(--color-bg-deep) 100%);
+  cursor: pointer;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+#landing .landing-content {
+  text-align: center;
+  padding: 2rem;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeIn 1.2s var(--transition-smooth) 0.3s forwards;
+}
+
+#landing h1 {
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 6vw, 2.8rem);
+  font-weight: 300;
+  font-style: italic;
+  color: var(--color-rose);
+  letter-spacing: 0.02em;
+  line-height: 1.3;
+  margin-bottom: 2rem;
+}
+
+#landing .landing-tap {
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  font-weight: 300;
+  color: var(--color-text-faint);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  opacity: 0;
+  animation: pulse 2s ease-in-out 1.5s infinite;
+}
+
+@keyframes fadeIn { to { opacity: 1; transform: translateY(0); } }
+@keyframes pulse { 0%, 100% { opacity: 0.4; } 50% { opacity: 0.9; } }
+
+#landing.hiding {
+  opacity: 0;
+  transition: opacity 0.6s var(--transition-smooth);
+  pointer-events: none;
+}
+
+/* Page */
+.page {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 2rem 1.25rem 4rem;
+  opacity: 0;
+  transition: opacity 0.8s var(--transition-smooth) 0.3s;
+}
+
+.page.visible { opacity: 1; }
+
+.header {
+  text-align: center;
+  margin-bottom: 2.5rem;
+  padding-top: 1rem;
+}
+
+.header h1 {
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 5vw, 2.2rem);
+  font-weight: 300;
+  font-style: italic;
+  color: var(--color-rose);
+  letter-spacing: 0.03em;
+  line-height: 1.4;
+  margin-bottom: 0.5rem;
+}
+
+.header-sub {
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  font-weight: 300;
+  color: var(--color-text-faint);
+  letter-spacing: 0.08em;
+}
+
+.header-line {
+  display: block;
+  width: 50px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--color-rose-gold-light), transparent);
+  margin: 1rem auto 0;
+}
+
+/* Voice memo cards */
+.memo {
+  margin-bottom: 1.5rem;
+  opacity: 0;
+  transform: translateY(15px);
+  animation: memoIn 0.6s var(--transition-smooth) forwards;
+}
+
+@keyframes memoIn { to { opacity: 1; transform: translateY(0); } }
+
+.memo:nth-child(1) { animation-delay: 0.3s; }
+.memo:nth-child(2) { animation-delay: 0.5s; }
+.memo:nth-child(3) { animation-delay: 0.7s; }
+.memo:nth-child(4) { animation-delay: 0.9s; }
+.memo:nth-child(5) { animation-delay: 1.1s; }
+
+.memo-card {
+  background: linear-gradient(145deg, var(--color-cream), var(--color-cream-warm));
+  border: 1px solid var(--color-card-border);
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow:
+    0 2px 8px var(--color-card-shadow),
+    inset 0 1px 0 rgba(255, 255, 255, 0.7);
+}
+
+.memo-title {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 400;
+  font-style: italic;
+  color: var(--color-rose);
+  line-height: 1.4;
+  margin-bottom: 0.75rem;
+}
+
+.memo-note {
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  font-weight: 300;
+  color: var(--color-text-light);
+  line-height: 1.6;
+  margin-bottom: 1rem;
+}
+
+/* Audio player */
+.memo-player {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.memo-play-btn {
+  width: 44px;
+  height: 44px;
+  border: 1.5px solid var(--color-card-border);
+  border-radius: 50%;
+  background: var(--color-cream);
+  color: var(--color-rose);
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.25s var(--transition-smooth);
+}
+
+.memo-play-btn:hover {
+  background: var(--color-rose);
+  color: white;
+  border-color: var(--color-rose);
+}
+
+.memo-play-btn:active {
+  transform: scale(0.92);
+}
+
+.memo-status {
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  font-weight: 300;
+  color: var(--color-text-faint);
+  letter-spacing: 0.04em;
+}
+
+/* Footer */
+.secret-footer {
+  text-align: center;
+  margin-top: 2rem;
+}
+
+.secret-footer a {
+  font-family: var(--font-display);
+  font-size: 0.9rem;
+  font-style: italic;
+  color: var(--color-rose-light);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.secret-footer a:hover { color: var(--color-rose); }
+
+@supports (padding: env(safe-area-inset-top)) {
+  body {
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+</style>
+</head>
+<body>
+
+<!-- Landing — unlocks audio on iOS/Chrome -->
+<div id="landing">
+  <div class="landing-content">
+    <h1>I have something<br>to tell you</h1>
+    <div class="landing-tap">tap anywhere to listen</div>
+  </div>
+</div>
+
+<div class="page" id="page">
+  <header class="header">
+    <h1>For You</h1>
+    <span class="header-sub">things I needed you to hear</span>
+    <span class="header-line"></span>
+  </header>
+
+  <div id="memos">
+    <!-- Rendered by JS -->
+  </div>
+
+  <div class="secret-footer">
+    <a href="index.html">&#9825;</a>
+  </div>
+</div>
+
+<script>
+/* ==============================================
+   CONFIG — EDIT EVERYTHING HERE
+   ==============================================
+   Each memo has:
+     title  — a short title or feeling
+     note   — a brief note (optional, can be empty "")
+     audio  — path to voice memo file (e.g. "audio/memo-1.m4a")
+*/
+var MEMOS = [
+  {
+    title: "The first one",
+    note: "Write a short note here, or leave it empty.",
+    audio: "audio/memo-1.m4a"
+  },
+  {
+    title: "What I couldn't say out loud",
+    note: "",
+    audio: "audio/memo-2.m4a"
+  },
+  {
+    title: "Late at night",
+    note: "",
+    audio: "audio/memo-3.m4a"
+  }
+];
+
+/* ==============================================
+   STATE
+   ============================================== */
+var currentMemoAudio = null;
+var currentMemoBtn = null;
+var currentMemoStatus = null;
+
+/* ==============================================
+   LANDING — TAP TO UNLOCK AUDIO
+   ============================================== */
+var landing = document.getElementById('landing');
+var page = document.getElementById('page');
+
+landing.addEventListener('click', function handleTap() {
+  // Unlock audio context
+  try {
+    var ctx = new (window.AudioContext || window.webkitAudioContext)();
+    var buf = ctx.createBuffer(1, 1, 22050);
+    var src = ctx.createBufferSource();
+    src.buffer = buf;
+    src.connect(ctx.destination);
+    src.start(0);
+  } catch (e) {}
+
+  landing.classList.add('hiding');
+  setTimeout(function() { landing.style.display = 'none'; }, 600);
+  page.classList.add('visible');
+  landing.removeEventListener('click', handleTap);
+}, { passive: true });
+
+/* ==============================================
+   BUILD MEMOS
+   ============================================== */
+var memosContainer = document.getElementById('memos');
+
+MEMOS.forEach(function(memo, i) {
+  var div = document.createElement('div');
+  div.className = 'memo';
+
+  var noteHTML = memo.note ? '<div class="memo-note">' + memo.note + '</div>' : '';
+
+  div.innerHTML =
+    '<div class="memo-card">' +
+      '<div class="memo-title">' + memo.title + '</div>' +
+      noteHTML +
+      '<div class="memo-player">' +
+        '<button class="memo-play-btn" data-index="' + i + '" aria-label="Play voice memo">&#9654;</button>' +
+        '<span class="memo-status" data-status="' + i + '">Tap to listen</span>' +
+      '</div>' +
+    '</div>';
+
+  memosContainer.appendChild(div);
+});
+
+/* ==============================================
+   AUDIO PLAYBACK
+   ============================================== */
+function stopCurrentMemo() {
+  if (currentMemoAudio) {
+    currentMemoAudio.pause();
+    currentMemoAudio.currentTime = 0;
+    currentMemoAudio.src = '';
+    currentMemoAudio = null;
+  }
+  if (currentMemoBtn) {
+    currentMemoBtn.innerHTML = '&#9654;';
+  }
+  if (currentMemoStatus) {
+    currentMemoStatus.textContent = 'Tap to listen';
+  }
+  currentMemoBtn = null;
+  currentMemoStatus = null;
+}
+
+document.addEventListener('click', function(e) {
+  var btn = e.target.closest('.memo-play-btn');
+  if (!btn) return;
+
+  var idx = parseInt(btn.getAttribute('data-index'), 10);
+  var statusEl = document.querySelector('[data-status="' + idx + '"]');
+  var memo = MEMOS[idx];
+
+  // If this memo is already playing, pause it
+  if (currentMemoBtn === btn && currentMemoAudio) {
+    stopCurrentMemo();
+    return;
+  }
+
+  // Stop any other playing memo
+  stopCurrentMemo();
+
+  // Play this one
+  currentMemoBtn = btn;
+  currentMemoStatus = statusEl;
+  currentMemoAudio = new Audio();
+  currentMemoAudio.src = memo.audio;
+
+  currentMemoAudio.onended = function() {
+    btn.innerHTML = '&#9654;';
+    statusEl.textContent = 'Tap to listen again';
+    currentMemoAudio = null;
+    currentMemoBtn = null;
+    currentMemoStatus = null;
+  };
+
+  currentMemoAudio.onerror = function() {
+    statusEl.textContent = 'Add: ' + memo.audio;
+  };
+
+  var p = currentMemoAudio.play();
+  if (p !== undefined) {
+    p.then(function() {
+      btn.innerHTML = '&#9646;&#9646;';
+      statusEl.textContent = 'Playing...';
+    }).catch(function() {
+      statusEl.textContent = 'Tap to listen';
+    });
+  }
+});
+
+/* Handle page visibility */
+document.addEventListener('visibilitychange', function() {
+  if (document.hidden && currentMemoAudio) {
+    currentMemoAudio.pause();
+  } else if (!document.hidden && currentMemoAudio && currentMemoBtn) {
+    currentMemoAudio.play().catch(function() {
+      stopCurrentMemo();
+    });
+  }
+});
+</script>
+</body>
+</html>
