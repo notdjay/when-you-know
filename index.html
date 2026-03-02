@@ -215,21 +215,24 @@ body {
    ============================================ */
 .table-container {
   width: 100%;
-  max-width: 480px;
+  max-width: 520px;
 }
 
 .table-row {
   display: flex;
   justify-content: center;
-  gap: 8px;
   margin-bottom: 8px;
 }
 
-/* Spacer creates the dip between heart humps */
-.heart-spacer {
-  width: 64px;
-  height: 72px;
-  flex-shrink: 0;
+/* Gap between word groups — creates the heart dip on row 1 */
+.table-row.heart-humps { gap: 20px; }
+.table-row.heart-body { gap: 14px; }
+.table-row.heart-point { gap: 0; }
+
+/* Group of elements forming a word */
+.word-group {
+  display: flex;
+  gap: 6px;
 }
 
 /* ============================================
@@ -237,8 +240,8 @@ body {
    ============================================ */
 .element {
   position: relative;
-  width: 64px;
-  height: 72px;
+  width: 52px;
+  height: 60px;
   background: linear-gradient(145deg, var(--color-cream), var(--color-cream-warm));
   border: 1px solid var(--color-card-border);
   border-radius: var(--radius-md);
@@ -304,7 +307,7 @@ body {
 
 .element-symbol {
   font-family: var(--font-display);
-  font-size: 1.8rem;
+  font-size: 1.5rem;
   font-weight: 500;
   color: var(--color-rose-dark);
   line-height: 1;
@@ -603,23 +606,18 @@ body {
    ============================================ */
 @media (min-width: 600px) {
   .element {
-    width: 90px;
-    height: 100px;
-  }
-
-  .heart-spacer {
-    width: 90px;
-    height: 100px;
+    width: 80px;
+    height: 90px;
   }
 
   .element-symbol {
-    font-size: 2.4rem;
+    font-size: 2.2rem;
   }
 
-  .table-row {
-    gap: 12px;
-    margin-bottom: 12px;
-  }
+  .word-group { gap: 10px; }
+  .table-row.heart-humps { gap: 30px; }
+  .table-row.heart-body { gap: 20px; }
+  .table-row { margin-bottom: 12px; }
 
   .modal {
     max-width: 500px;
@@ -635,23 +633,18 @@ body {
    ============================================ */
 @media (max-width: 374px) {
   .element {
-    width: 54px;
-    height: 62px;
-  }
-
-  .heart-spacer {
-    width: 54px;
-    height: 62px;
+    width: 44px;
+    height: 52px;
   }
 
   .element-symbol {
-    font-size: 1.4rem;
+    font-size: 1.2rem;
   }
 
-  .table-row {
-    gap: 5px;
-    margin-bottom: 5px;
-  }
+  .word-group { gap: 4px; }
+  .table-row.heart-humps { gap: 14px; }
+  .table-row.heart-body { gap: 10px; }
+  .table-row { margin-bottom: 6px; }
 
   .modal-body {
     padding: 1.2rem;
@@ -874,19 +867,18 @@ const ELEMENTS = [
 ];
 
 /*
-  HEART LAYOUT — reading order spells WHEN YOU KNOW YOU KNOW
-  Row 1: W  H  [gap]  En  Y    (heart humps)
-  Row 2: O  U  Kn  Ow  Yo      (wide body)
-  Row 3:    U   K   No          (taper)
-  Row 4:       W                (point)
+  HEART LAYOUT — words stay grouped, shape tapers like a heart
+  Row 1: [W H En]  [Y O U]        WHEN + YOU    (two humps)
+  Row 2:    [Kn Ow]  [Yo U]       KNOW + YOU    (body)
+  Row 3:       [K No W]           KNOW           (point)
 
-  Use 'gap' to insert a spacer for the heart dip
+  Each row is an array of word-groups.
+  rowClass controls the gap between groups.
 */
 const GRID_ROWS = [
-  [0, 1, 'gap', 2, 3],
-  [4, 5, 6, 7, 8],
-  [9, 10, 11],
-  [12]
+  { groups: [[0,1,2], [3,4,5]], rowClass: 'heart-humps' },
+  { groups: [[6,7], [8,9]],     rowClass: 'heart-body' },
+  { groups: [[10,11,12]],       rowClass: 'heart-point' }
 ];
 
 /* ==============================================
@@ -962,46 +954,42 @@ landing.addEventListener('click', function handleLanding() {
 function buildGrid() {
   GRID_ROWS.forEach(function(row) {
     var rowDiv = document.createElement('div');
-    rowDiv.className = 'table-row';
+    rowDiv.className = 'table-row ' + row.rowClass;
 
-    row.forEach(function(idx) {
-      // Insert invisible spacer for heart dip
-      if (idx === 'gap') {
-        var spacer = document.createElement('div');
-        spacer.className = 'heart-spacer';
-        spacer.setAttribute('aria-hidden', 'true');
-        rowDiv.appendChild(spacer);
-        return;
-      }
+    row.groups.forEach(function(group) {
+      var groupDiv = document.createElement('div');
+      groupDiv.className = 'word-group';
 
-      var el = ELEMENTS[idx];
-      var cell = document.createElement('div');
-      cell.className = 'element';
-      cell.setAttribute('data-index', idx);
-      cell.setAttribute('role', 'button');
-      cell.setAttribute('tabindex', '0');
-      cell.setAttribute('aria-label', el.name + '. Tap to open memory.');
+      group.forEach(function(idx) {
+        var el = ELEMENTS[idx];
+        var cell = document.createElement('div');
+        cell.className = 'element';
+        cell.setAttribute('data-index', idx);
+        cell.setAttribute('role', 'button');
+        cell.setAttribute('tabindex', '0');
+        cell.setAttribute('aria-label', el.name + '. Tap to open memory.');
 
-      var sym = document.createElement('span');
-      sym.className = 'element-symbol';
-      sym.textContent = el.symbol;
+        var sym = document.createElement('span');
+        sym.className = 'element-symbol';
+        sym.textContent = el.symbol;
 
-      cell.appendChild(sym);
+        cell.appendChild(sym);
 
-      // Click handler
-      cell.addEventListener('click', function() {
-        openElement(idx);
-      }, { passive: true });
-
-      // Keyboard accessibility
-      cell.addEventListener('keydown', function(e) {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
+        cell.addEventListener('click', function() {
           openElement(idx);
-        }
+        }, { passive: true });
+
+        cell.addEventListener('keydown', function(e) {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            openElement(idx);
+          }
+        });
+
+        groupDiv.appendChild(cell);
       });
 
-      rowDiv.appendChild(cell);
+      rowDiv.appendChild(groupDiv);
     });
 
     tableContainer.appendChild(rowDiv);
